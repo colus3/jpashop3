@@ -80,30 +80,30 @@ public class OrderApiController {
     public List<OrderQueryDto> ordersV6() {
         List<OrderFlatDto> flats = orderQueryRepository.findAllByDto_flat();
 
-//        return flats.stream()
-//                .collect(groupingBy(o -> new OrderQueryDto(o.getOrderId(),
-//                                o.getName(), o.getOrderDate(), o.getOrderStatus(), o.getAddress()),
-//                        mapping(o -> new OrderItemQueryDto(o.getOrderId(),
-//                                o.getItemName(), o.getOrderPrice(), o.getCount()), toList())
-//                )).entrySet().stream()
-//                .map(e -> new OrderQueryDto(e.getKey().getOrderId(),
-//                        e.getKey().getName(), e.getKey().getOrderDate(), e.getKey().getOrderStatus(),
-//                        e.getKey().getAddress(), e.getValue()))
-//                .collect(toList());
+        return flats.stream()
+                .collect(groupingBy(o -> new OrderQueryDto(o.getOrderId(),
+                                o.getName(), o.getOrderDate(), o.getOrderStatus(), o.getAddress()),
+                        mapping(o -> new OrderItemQueryDto(o.getOrderId(),
+                                o.getItemName(), o.getOrderPrice(), o.getCount()), toList())
+                )).entrySet().stream()
+                .map(e -> new OrderQueryDto(e.getKey().getOrderId(),
+                        e.getKey().getName(), e.getKey().getOrderDate(), e.getKey().getOrderStatus(),
+                        e.getKey().getAddress(), e.getValue()))
+                .collect(toList());
 
-        return new ArrayList<>(flats.stream()
-                .collect(toMap(OrderFlatDto::getOrderId, o -> {
-                    // Key : OrderId, Value : OrderQueryDto (OrderItemQueryDto 1건 포함)
-                    OrderQueryDto orderQueryDto
-                            = new OrderQueryDto(o.getOrderId(), o.getName(), o.getOrderDate(), o.getOrderStatus(), o.getAddress());
-                    orderQueryDto
-                            .getOrderItems()
-                            .add(new OrderItemQueryDto(o.getOrderId(), o.getItemName(), o.getOrderPrice(), o.getCount()));
-                    return orderQueryDto;
-                }, (e1, e2) -> {
-                    e1.getOrderItems().addAll(e2.getOrderItems());
-                    return e1;
-                })).values());
+//        return new ArrayList<>(flats.stream()
+//                .collect(toMap(OrderFlatDto::getOrderId, o -> {
+//                    // Key : OrderId, Value : OrderQueryDto (OrderItemQueryDto 1건 포함)
+//                    OrderQueryDto orderQueryDto
+//                            = new OrderQueryDto(o.getOrderId(), o.getName(), o.getOrderDate(), o.getOrderStatus(), o.getAddress());
+//                    orderQueryDto
+//                            .getOrderItems()
+//                            .add(new OrderItemQueryDto(o.getOrderId(), o.getItemName(), o.getOrderPrice(), o.getCount()));
+//                    return orderQueryDto;
+//                }, (e1, e2) -> {
+//                    e1.getOrderItems().addAll(e2.getOrderItems());
+//                    return e1;
+//                })).values());
     }
 
     @Data
